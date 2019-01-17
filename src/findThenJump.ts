@@ -13,10 +13,10 @@ type MatchesArr = Match[]
 
 export class FindThenJump {
   isActive = false
-  inlineInput: InlineInput
+  inlineInput: InlineInput | any
   intervalHandler: any
   userInput: string = ''
-  textEditor: TextEditor
+  textEditor: TextEditor | any
   associationManager = new AssociationManager()
   activityIndicatorState = 0
   activatedWithSelection = false
