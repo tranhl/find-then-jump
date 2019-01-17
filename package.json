@@ -1,0 +1,50 @@
+{
+    "name": "find-then-jump",
+    "displayName": "find-then-jump",
+    "description": "",
+    "version": "0.0.1",
+    "publisher": "tranhl",
+    "engines": {
+        "vscode": "^1.30.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:findThenJump.initiate",
+        "onCommand:findThenJump.initiateWithSelection"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+          {
+            "command": "findThenJump.initiate",
+            "title": "Find Then Jump"
+          },
+          {
+            "command": "findThenJump.initiateWithSelection",
+            "title": "Find Then Jump With Selection"
+          }
+        ],
+        "keybindings": [
+          {
+            "command": "findThenJump.input.cancel",
+            "key": "escape",
+            "when": "editorTextFocus && findThenJumpInitiated"
+          }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.21",
+        "@types/node": "^8.10.25",
+        "@types/mocha": "^2.2.42"
+    }
+}
