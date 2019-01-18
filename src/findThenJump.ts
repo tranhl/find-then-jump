@@ -4,77 +4,56 @@ import {
   TextLine,
   Range,
 } from 'vscode'
-import {InlineInput} from './inlineInput'
+import {InputBox} from './inputBox'
 import {documentRippleScanner} from './documentRippleScanner'
 import {AssociationManager} from './associationManager'
 
 type Match = { start: number, end: number, excludedChars: string[] }
-type MatchesArr = Match[]
 
 export class FindThenJump {
-  isActive = false
-  inlineInput: InlineInput | any
-  intervalHandler: any
-  userInput: string = ''
   textEditor: TextEditor | any
+  inputBox: InputBox | any
   associationManager = new AssociationManager()
-  activityIndicatorState = 0
-  activatedWithSelection = false
-  searchFunctionDebounceTracker: any
+  initiated = false
+  initiatedWithSelection = false
+  userInput: string = ''
 
-  initiate = (textEditor: TextEditor) => {
-    if (this.isActive) {
+  public initiate = (textEditor: TextEditor) => {
+    if (this.initiated) {
       return
     }
 
     this.textEditor = textEditor
+    this.initiated = true
 
-    this.isActive = true
-
-    this.inlineInput = new InlineInput({
+    this.inputBox = new InputBox({
       textEditor,
-      onInput: this.onInput,
-      onBackspace: this.onBackspace,
+      onInputValueChange: this.handleInputValueChange,
       onCancel: this.reset,
     })
-
-    this.updateStatusBarWithActivityIndicator()
   }
 
-  initiateWithSelection = (textEditor: TextEditor) => {
-    this.activatedWithSelection = true
+  public initiateWithSelection = (textEditor: TextEditor) => {
+    this.initiatedWithSelection = true
     this.initiate(textEditor)
   }
 
-  onInput = (input: string, char: string) => {
+  private handleInputValueChange = (input: string, char: string) => {
     if (this.associationManager.associations.has(char)) {
       this.jump(char)
-
       return
     }
 
-    this.updateUserInputAndFindState(input)
-  }
-
-  onBackspace = (input: string) => {
     if (input === '') {
-      this.userInput = input
-      this.associationManager.dispose()
-      this.updateStatusBarWithActivityIndicator()
-
+      this.reset()
       return
     }
 
-    this.updateUserInputAndFindState(input)
-  }
-  
-  updateUserInputAndFindState = (input: string) => {
     this.userInput = input
-    this.updateStatusBarWithActivityIndicator()
     this.performSearch()
   }
-
-  performSearch = () => {
+  
+  private performSearch = () => {
     const {matches, availableJumpChars} = this.getMatchesAndAvailableJumpChars()
 
     if (matches.length > 0) {
@@ -95,26 +74,7 @@ export class FindThenJump {
     }
   }
 
-  jump = (jumpChar: string) => {
-    const range = this.associationManager.associations.get(jumpChar)
-
-    if (!range) {
-      return
-    }
-
-    const {line, character} = range.start
-
-    this.textEditor.selection = new Selection(
-      this.activatedWithSelection ? this.textEditor.selection.start.line : line,
-      this.activatedWithSelection ? this.textEditor.selection.start.character : character,
-      line,
-      character,
-    )
-
-    this.reset()
-  }
-
-  getMatchesAndAvailableJumpChars = () => {
+  private getMatchesAndAvailableJumpChars = () => {
     const {document, selection} = this.textEditor
     const documentIterator = documentRippleScanner(document, selection.end.line)
     const availableJumpChars = [...this.associationManager.jumpChars]
@@ -146,7 +106,7 @@ export class FindThenJump {
     return {matches, availableJumpChars}
   }
 
-  getLineMatches = (line: TextLine): MatchesArr => {
+  private getLineMatches = (line: TextLine): Match[] => {
     const indexes = []
     const {text} = line
     const haystack = text.toLowerCase()
@@ -167,37 +127,29 @@ export class FindThenJump {
     return indexes
   }
 
-  reset = () => {
-    this.isActive = false
-    this.activatedWithSelection = false
-    this.userInput = ''
-    this.clearActivityIndicator()
-    this.inlineInput.destroy()
-    this.associationManager.dispose()
-  }
+  private jump = (jumpChar: string) => {
+    const range = this.associationManager.associations.get(jumpChar)
 
-  updateStatusBarWithActivityIndicator = () => {
-    const callback = () => {
-      if (this.activityIndicatorState === 1) {
-        this.inlineInput.updateStatusBar(`Find-Jump: ${this.userInput} 🔴`)
-        this.activityIndicatorState = 0
-      } else {
-        this.inlineInput.updateStatusBar(`Find-Jump: ${this.userInput} ⚪`)
-        this.activityIndicatorState = 1
-      }
+    if (!range) {
+      return
     }
 
-    this.inlineInput.updateStatusBar(
-      `Find-Jump: ${this.userInput} ${this.activityIndicatorState === 0 ? '🔴' : '⚪'}`,
+    const {line, character} = range.start
+
+    this.textEditor.selection = new Selection(
+      this.initiatedWithSelection ? this.textEditor.selection.start.line : line,
+      this.initiatedWithSelection ? this.textEditor.selection.start.character : character,
+      line,
+      character,
     )
 
-    if (this.intervalHandler === undefined) {
-      this.intervalHandler = setInterval(callback, 600)
-    }
+    this.reset()
   }
 
-  clearActivityIndicator = () => {
-    clearInterval(this.intervalHandler)
-    this.intervalHandler = undefined
+  private reset = () => {
+    this.initiated = false
+    this.initiatedWithSelection = false
+    this.userInput = ''
+    this.associationManager.dispose()
   }
 }
