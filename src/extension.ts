@@ -1,7 +1,7 @@
 'use strict'
 import {commands, ExtensionContext} from 'vscode'
 import {FindThenJump} from './findThenJump'
-import {subscriptions as inlineInputSubscriptions} from './inlineInput'
+import {subscriptions as inlineInputSubscriptions} from './inputBox'
 
 const findThenJump = new FindThenJump()
 

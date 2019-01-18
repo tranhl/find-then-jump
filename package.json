@@ -21,18 +21,6 @@
             "command": "findThenJump.initiateWithSelection",
             "title": "Find Then Jump With Selection"
           }
-        ],
-        "keybindings": [
-          {
-            "command": "findThenJump.input.backspace",
-            "key": "backspace",
-            "when": "findThenJumpInitiated && editorTextFocus"
-          },
-          {
-            "command": "findThenJump.input.cancel",
-            "key": "escape",
-            "when": "findThenJumpInitiated && editorTextFocus"
-          }
         ]
     },
     "scripts": {
