@@ -21,6 +21,26 @@
             "command": "findThenJump.initiateWithSelection",
             "title": "Find Then Jump With Selection"
           }
+        ],
+        "colors": [
+            {
+                "id": "findThenJump.textDecorationForeground",
+                "description": "Foreground color of decorations that appear to the left of search term matches.",
+                "defaults": {
+                    "dark": "#FFF",
+                    "light": "#FFF",
+                    "highContrast": "#FFF"
+                }
+            },
+            {
+                "id": "findThenJump.textDecorationBackground",
+                "description": "Background color of decorations that appear to the left of search term matches.",
+                "defaults": {
+                    "dark": "#4169E1",
+                    "light": "#4169E1",
+                    "highContrast": "#4169E1"
+                }
+            }
         ]
     },
     "scripts": {

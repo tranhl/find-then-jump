@@ -32,10 +32,10 @@ export class AssociationManager {
       before: {
         contentText: finalLetter,
         margin: '0 5px 0 5px',
-        backgroundColor: '#4169E1',
+        backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
         border: '3px solid',
-        color: 'white',
-        borderColor: '#4169E1',
+        color: new ThemeColor('findThenJump.textDecorationForeground'),
+        borderColor: new ThemeColor('findThenJump.textDecorationBackground'),
       },
     })
 
