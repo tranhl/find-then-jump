@@ -23,17 +23,18 @@ export class FindThenJump {
   searchFunctionDebounceTracker: any
 
   initiate = (textEditor: TextEditor) => {
-    this.textEditor = textEditor
-
     if (this.isActive) {
-      this.reset()
+      return
     }
+
+    this.textEditor = textEditor
 
     this.isActive = true
 
     this.inlineInput = new InlineInput({
       textEditor,
       onInput: this.onInput,
+      onBackspace: this.onBackspace,
       onCancel: this.reset,
     })
 
@@ -52,6 +53,22 @@ export class FindThenJump {
       return
     }
 
+    this.updateUserInputAndFindState(input)
+  }
+
+  onBackspace = (input: string) => {
+    if (input === '') {
+      this.userInput = input
+      this.associationManager.dispose()
+      this.updateStatusBarWithActivityIndicator()
+
+      return
+    }
+
+    this.updateUserInputAndFindState(input)
+  }
+  
+  updateUserInputAndFindState = (input: string) => {
     this.userInput = input
     this.updateStatusBarWithActivityIndicator()
     this.performSearch()

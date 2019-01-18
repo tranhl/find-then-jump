@@ -4,12 +4,8 @@
     "description": "",
     "version": "0.0.1",
     "publisher": "tranhl",
-    "engines": {
-        "vscode": "^1.30.0"
-    },
-    "categories": [
-        "Other"
-    ],
+    "engines": {"vscode": "^1.30.0"},
+    "categories": ["Other"],
     "activationEvents": [
         "onCommand:findThenJump.initiate",
         "onCommand:findThenJump.initiateWithSelection"
@@ -28,9 +24,14 @@
         ],
         "keybindings": [
           {
+            "command": "findThenJump.input.backspace",
+            "key": "backspace",
+            "when": "findThenJumpInitiated && editorTextFocus"
+          },
+          {
             "command": "findThenJump.input.cancel",
             "key": "escape",
-            "when": "editorTextFocus && findThenJumpInitiated"
+            "when": "findThenJumpInitiated && editorTextFocus"
           }
         ]
     },

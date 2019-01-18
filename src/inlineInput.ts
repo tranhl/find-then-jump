@@ -17,10 +17,12 @@ export class InlineInput {
   constructor(private props: {
     textEditor: TextEditor,
     onInput(input: string, char: string): any,
+    onBackspace(input: string): any,
     onCancel(...args: any[]): any,
   }) {
     subscriptions.push(
       commands.registerCommand('type', this.onInput),
+      commands.registerTextEditorCommand('findThenJump.input.backspace', this.onBackspace),
       commands.registerTextEditorCommand('findThenJump.input.cancel', this.onCancel),
       window.onDidChangeTextEditorSelection(this.onCancel),
     )
@@ -53,6 +55,17 @@ export class InlineInput {
     } else {
       return this.props.onInput(this.input, char)
     }
+  }
+
+  private onBackspace = () => {
+    const {input} = this
+    const inputLength = input.length
+
+    this.input = inputLength !== 1
+      ? input.substring(0, inputLength - 1)
+      : ''
+
+    return this.props.onBackspace(this.input)
   }
 
   private onCancel = (...args: any[]) => {
