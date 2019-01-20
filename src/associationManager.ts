@@ -6,6 +6,8 @@ import {
   TextEditor,
 } from 'vscode'
 
+import {Match} from './controller'
+
 export class AssociationManager {
   public activeDecorations: TextEditorDecorationType[] = []
   public associations: Map<string, Range> = new Map()
@@ -25,12 +27,25 @@ export class AssociationManager {
     'Y', 'Z',
   ]
 
-  public createAssociation = (letter: string, range: Range, textEditor: TextEditor) => {
-    const finalLetter = letter === letter.toUpperCase() ? `⇧${letter.toLowerCase()}` : letter
-    const type = window.createTextEditorDecorationType({
+  public createAssociation = (
+    letter: string, 
+    {index: matchIndex, value: match}: {index: number, value: Match},
+    textEditor: TextEditor
+  ) => {
+    const jumpDecorationText = letter === letter.toUpperCase() ? `⇧${letter.toLowerCase()}` : letter
+    const jumpDecoration = this.createJumpDecoration(jumpDecorationText)
+    const range = new Range(matchIndex, match.start, matchIndex, match.end)
+
+    this.activeDecorations.push(jumpDecoration)
+    this.associations.set(letter, range)
+    textEditor.setDecorations(jumpDecoration, [range])
+  }
+
+  private createJumpDecoration = (decorationText: string) => {
+    return window.createTextEditorDecorationType({
       backgroundColor: new ThemeColor('editor.wordHighlightBackground'),
       before: {
-        contentText: finalLetter,
+        contentText: decorationText,
         margin: '0 5px 0 5px',
         backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
         border: '3px solid',
@@ -38,10 +53,6 @@ export class AssociationManager {
         borderColor: new ThemeColor('findThenJump.textDecorationBackground'),
       },
     })
-
-    this.activeDecorations.push(type)
-    textEditor.setDecorations(type, [range])
-    this.associations.set(letter, range)
   }
 
   public dispose = () => {

@@ -2,7 +2,6 @@ import {
   Selection,
   TextEditor,
   TextLine,
-  Range,
 } from 'vscode'
 import {InputBox} from './inputBox'
 import {documentRippleScanner} from './documentRippleScanner'
@@ -10,7 +9,7 @@ import {AssociationManager} from './associationManager'
 
 type Match = { start: number, end: number, excludedChars: string[] }
 
-export class FindThenJump {
+class Controller {
   textEditor: TextEditor | any
   inputBox: InputBox | any
   associationManager = new AssociationManager()
@@ -50,28 +49,17 @@ export class FindThenJump {
     }
 
     this.userInput = input
-    this.performSearch()
+    this.updateJumpAssociations()
   }
   
-  private performSearch = () => {
+  private updateJumpAssociations = () => {
     const {matches, availableJumpChars} = this.getMatchesAndAvailableJumpChars()
 
-    if (matches.length > 0) {
-      this.associationManager.dispose()
-    }
-
-    for (let i = 0; i < matches.length; i++) {
-      if (availableJumpChars[i] === undefined) {
-        break
-      }
-
-      const match = matches[i]
-      const availableJumpChar = availableJumpChars[i]
-      const {index, value} = match
-      const range = new Range(index, value.start, index, value.end)
-
-      this.associationManager.createAssociation(availableJumpChar, range, this.textEditor)
-    }
+    // New user input creates new matches, so we clear all associations to 
+    // ensure that new associates are created with a valid jump key, and that 
+    // there are no duplicate associations.
+    this.clearJumpAssociations()
+    this.createJumpAssociations(matches, availableJumpChars)
   }
 
   private getMatchesAndAvailableJumpChars = () => {
@@ -127,6 +115,22 @@ export class FindThenJump {
     return indexes
   }
 
+  private clearJumpAssociations = () => {
+    this.associationManager.dispose()
+  }
+
+  private createJumpAssociations = (matches: {value: Match, index: number}[], availableJumpChars: string[]) => {
+    if (availableJumpChars.length === 0) {
+      return
+    }
+
+    for (let i = 0; i < matches.length; i += 1)  {
+      const match = matches[i]
+      const availableJumpChar = availableJumpChars[i]
+      this.associationManager.createAssociation(availableJumpChar, match, this.textEditor)
+    }
+  }
+
   private jump = (jumpChar: string) => {
     const range = this.associationManager.associations.get(jumpChar)
 
@@ -153,3 +157,5 @@ export class FindThenJump {
     this.associationManager.dispose()
   }
 }
+
+export {Match, Controller}
