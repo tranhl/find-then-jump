@@ -9,23 +9,13 @@ import {
 import {Match} from './controller'
 
 export class AssociationManager {
-  public activeDecorations: TextEditorDecorationType[] = []
-  public associations: Map<string, Range> = new Map()
-  public jumpChars = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g',
-    'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-    'q', 'r', 's',
-    't', 'u', 'v',
-    'w', 'x',
-    'y', 'z',
+  public activeDecorations: TextEditorDecorationType[]
+  public associations: Map<string, Range>
 
-    'A', 'B', 'C', 'D', 'E', 'F', 'G',
-    'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-    'Q', 'R', 'S',
-    'T', 'U', 'V',
-    'W', 'X',
-    'Y', 'Z',
-  ]
+  constructor() {
+    this.activeDecorations = []
+    this.associations = new Map()
+  }
 
   public createAssociation = (
     letter: string, 

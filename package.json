@@ -4,8 +4,12 @@
     "description": "",
     "version": "0.0.1",
     "publisher": "tranhl",
-    "engines": {"vscode": "^1.30.0"},
-    "categories": ["Other"],
+    "engines": {
+        "vscode": "^1.30.0"
+    },
+    "categories": [
+        "Other"
+    ],
     "activationEvents": [
         "onCommand:findThenJump.initiate",
         "onCommand:findThenJump.initiateWithSelection"
@@ -13,14 +17,14 @@
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
-          {
-            "command": "findThenJump.initiate",
-            "title": "Find Then Jump"
-          },
-          {
-            "command": "findThenJump.initiateWithSelection",
-            "title": "Find Then Jump With Selection"
-          }
+            {
+                "command": "findThenJump.initiate",
+                "title": "Find Then Jump"
+            },
+            {
+                "command": "findThenJump.initiateWithSelection",
+                "title": "Find Then Jump With Selection"
+            }
         ],
         "colors": [
             {
@@ -55,5 +59,9 @@
         "vscode": "^1.1.21",
         "@types/node": "^8.10.25",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "@types/ramda": "^0.25.47",
+        "ramda": "^0.26.1"
     }
 }

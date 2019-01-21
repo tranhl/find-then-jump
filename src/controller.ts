@@ -1,21 +1,42 @@
 import {
   Selection,
   TextEditor,
-  TextLine,
 } from 'vscode'
+import {without} from 'ramda'
 import {InputBox} from './inputBox'
-import {documentRippleScanner} from './documentRippleScanner'
+import {createDocumentLineIterator} from './documentIterator'
 import {AssociationManager} from './associationManager'
 
-type Match = { start: number, end: number, excludedChars: string[] }
+type Match = {
+  start: number,
+  end: number,
+  excludedChars: string[],
+}
 
 class Controller {
+  static EXCLUSION_LOOKAHEAD_LENGTH = 8
+  static generateValidJumpChars: () => string[]
+    = () => [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ']
+
   textEditor: TextEditor | any
   inputBox: InputBox | any
-  associationManager = new AssociationManager()
-  initiated = false
-  initiatedWithSelection = false
-  userInput: string = ''
+  associationManager: AssociationManager
+  initiated: boolean
+  initiatedWithSelection: boolean
+  userInput: string
+  inputMatches: { value: Match, index: number }[]
+  currentLineMatches: Match[]
+  availableJumpChars: string[] = Controller.generateValidJumpChars()
+
+  constructor() {
+    this.associationManager = new AssociationManager()
+    this.initiated = false
+    this.initiatedWithSelection = false
+    this.userInput = ''
+    this.inputMatches = []
+    this.currentLineMatches = []
+    this.availableJumpChars = Controller.generateValidJumpChars()
+  }
 
   public initiate = (textEditor: TextEditor) => {
     if (this.initiated) {
@@ -49,84 +70,86 @@ class Controller {
     }
 
     this.userInput = input
-    this.updateJumpAssociations()
+    this.updateJumpPossibilities()
   }
   
-  private updateJumpAssociations = () => {
-    const {matches, availableJumpChars} = this.getMatchesAndAvailableJumpChars()
+  private updateJumpPossibilities = () => {
+    this.updateInputMatchesAndAvailableJumpChars()
 
-    // New user input creates new matches, so we clear all associations to 
-    // ensure that new associates are created with a valid jump key, and that 
-    // there are no duplicate associations.
-    this.clearJumpAssociations()
-    this.createJumpAssociations(matches, availableJumpChars)
+    // New user input will generate new input matches, so to avoid duplicates
+    // and ensure valid jump keys, we reset all current jump associations.
+    this.resetJumpAssociations()
+    this.createJumpAssociations()
+    this.resetJumpMetadata()
   }
 
-  private getMatchesAndAvailableJumpChars = () => {
+  private updateInputMatchesAndAvailableJumpChars = () => {
     const {document, selection} = this.textEditor
-    const documentIterator = documentRippleScanner(document, selection.end.line)
-    const availableJumpChars = [...this.associationManager.jumpChars]
-    const matches: { value: Match, index: number }[] = []
+    const documentLineIterator = createDocumentLineIterator(document, selection.end.line)
 
-    outer: for (const {line, index} of documentIterator) {
-      const lineMatches = this.getLineMatches(line)
-
-      for(const lineMatch of lineMatches) {
-        if (matches.length >= availableJumpChars.length) {
-          break outer
-        }
-
-        matches.push({value: lineMatch, index})
-
-        for(const excludedChar of lineMatch.excludedChars) {
-          for (let i = 0; i < 2; i++) {
-            const method = i === 0 ? 'toLowerCase' : 'toUpperCase'
-            const indexOfExcludedChar = availableJumpChars.indexOf(excludedChar[method]())
-
-            if (indexOfExcludedChar !== -1) {
-              availableJumpChars.splice(indexOfExcludedChar, 1)
-            }
-          }
-        }
-      }
+    for (const {index: lineIndex, line} of documentLineIterator) {
+      const needle = this.userInput.toLowerCase()
+      const haystack = line.text.toLowerCase()
+      this.updateInputMatches(lineIndex, needle, haystack)
     }
-
-    return {matches, availableJumpChars}
   }
 
-  private getLineMatches = (line: TextLine): Match[] => {
-    const indexes = []
-    const {text} = line
-    const haystack = text.toLowerCase()
-    const needle = this.userInput.toLowerCase()
+  private updateInputMatches = (
+    lineIndex: number,
+    needle: string,
+    haystack: string
+  ) => {
+    for (let needleSearchIndex = 0;;) {
+      if ((needleSearchIndex = haystack.indexOf(needle, needleSearchIndex)) === -1) return
+      if (this.inputMatches.length > this.availableJumpChars.length) return
 
-    let index = 0
-    let iterationNumber = 0
-    while (
-      (index = haystack.indexOf(needle, iterationNumber === 0 ? 0 : index + needle.length)) !== -1
-    ) {
-      const start = index
-      const end = index + needle.length
-      const excludedChars = haystack.slice(end, end + 8).replace(/[^a-z]/gi, '').split('')
-      indexes.push({start, end, excludedChars})
-      iterationNumber++
+      const matchStartIndex = needleSearchIndex
+      const matchEndIndex = needleSearchIndex + needle.length
+      const excludedChars = this.getExcludedChars(haystack, matchEndIndex)
+      const match = {start: matchStartIndex, end: matchEndIndex, excludedChars}
+
+      this.inputMatches.push({index: lineIndex, value: match})
+      this.removeExcludedCharsFromAvailableChars(excludedChars)
+
+      needleSearchIndex = matchEndIndex
     }
-
-    return indexes
   }
 
-  private clearJumpAssociations = () => {
+  private getExcludedChars = (haystack: string, matchEndIndex: number) => {
+    const haystackExclusionEndIndex = matchEndIndex + Controller.EXCLUSION_LOOKAHEAD_LENGTH
+    const haystackExclusionLookahead = haystack.slice(matchEndIndex, haystackExclusionEndIndex)
+    const filteredHaystackExclusionLookahead = haystackExclusionLookahead.replace(/[^a-z]/gi, '')
+
+    return [...filteredHaystackExclusionLookahead]
+  }
+
+  private removeExcludedCharsFromAvailableChars = (excludedChars: string[]) => {
+    for (const excludedChar of excludedChars) {
+      const lowercaseChar = excludedChar.toLowerCase()
+      const uppercaseChar = excludedChar.toUpperCase()
+
+      this.availableJumpChars = without([lowercaseChar, uppercaseChar], this.availableJumpChars)
+    }
+  }
+
+  private resetJumpAssociations = () => {
     this.associationManager.dispose()
   }
 
-  private createJumpAssociations = (matches: {value: Match, index: number}[], availableJumpChars: string[]) => {
-    if (availableJumpChars.length === 0) {
-      return
-    }
+  private resetJumpMetadata = () => {
+    this.inputMatches = []
+    this.currentLineMatches = []
+    this.availableJumpChars = Controller.generateValidJumpChars()
+  }
 
-    for (let i = 0; i < matches.length; i += 1)  {
-      const match = matches[i]
-      const availableJumpChar = availableJumpChars[i]
+  private createJumpAssociations = () => {
+    if (this.availableJumpChars.length === 0) return
+
+    console.log(this.inputMatches, this.availableJumpChars);
+
+    for (let i = 0; i < this.inputMatches.length; i += 1)  {
+      const match = this.inputMatches[i]
+      const availableJumpChar = this.availableJumpChars[i]
       this.associationManager.createAssociation(availableJumpChar, match, this.textEditor)
     }
   }
@@ -154,7 +177,7 @@ class Controller {
     this.initiated = false
     this.initiatedWithSelection = false
     this.userInput = ''
-    this.associationManager.dispose()
+    this.resetJumpAssociations()
   }
 }
 

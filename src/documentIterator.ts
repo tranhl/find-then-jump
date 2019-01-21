@@ -1,6 +1,4 @@
-import {
-  TextDocument,
-} from 'vscode'
+import {TextDocument} from 'vscode'
 
 enum NextLineToRead {
   Current,
@@ -14,7 +12,7 @@ enum NextLineToRead {
  * we move to the line above, then the line below. Then the second line above, then the second line
  * below and so on...
  */
-export function* documentRippleScanner(
+export function* createDocumentLineIterator(
   document: Readonly<TextDocument>,
   startingLine: number,
 ) {
