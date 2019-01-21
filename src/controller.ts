@@ -151,8 +151,6 @@ class Controller {
   private createJumpAssociations = () => {
     if (this.availableJumpChars.length === 0) return
 
-    console.log(this.inputMatches, this.availableJumpChars);
-
     for (let i = 0; i < this.inputMatches.length; i += 1)  {
       const match = this.inputMatches[i]
       const availableJumpChar = this.availableJumpChars[i]
