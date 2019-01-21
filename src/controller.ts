@@ -14,6 +14,11 @@ type Match = {
 }
 
 class Controller {
+  // When generating a list of valid jump characters, there are cases where
+  // the user continues typing, expecting to narrow down their search, but
+  // accidentally trigger a jump instead. By excluding letters ahead of the
+  // search match, we can prevent this from happening. This value was chosen
+  // through trial and error, and prevents the above case from happening.
   static EXCLUSION_LOOKAHEAD_LENGTH = 8
   static generateValidJumpChars: () => string[]
     = () => [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ']
@@ -77,7 +82,8 @@ class Controller {
     this.updateInputMatchesAndAvailableJumpChars()
 
     // New user input will generate new input matches, so to avoid duplicates
-    // and ensure valid jump keys, we reset all current jump associations.
+    // and ensure valid jump keys, we reset all current jump associations before
+    // creating new jump associations.
     this.resetJumpAssociations()
     this.createJumpAssociations()
     this.resetJumpMetadata()
