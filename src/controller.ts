@@ -54,7 +54,7 @@ class Controller {
     this.inputBox = new InputBox({
       textEditor,
       onInputValueChange: this.handleInputValueChange,
-      onCancel: this.reset,
+      onCancel: this.resetExtensionState,
     })
   }
 
@@ -65,12 +65,12 @@ class Controller {
 
   private handleInputValueChange = (input: string, char: string) => {
     if (this.associationManager.associations.has(char)) {
-      this.jump(char)
+      this.jumpToJumpCharPosition(char)
       return
     }
 
     if (input === '') {
-      this.reset()
+      this.resetExtensionState()
       return
     }
 
@@ -86,7 +86,7 @@ class Controller {
     // creating new jump associations.
     this.resetJumpAssociations()
     this.createJumpAssociations()
-    this.resetJumpMetadata()
+    this.resetSearchMetadata()
   }
 
   private updateInputMatchesAndAvailableJumpChars = () => {
@@ -142,7 +142,7 @@ class Controller {
     this.associationManager.dispose()
   }
 
-  private resetJumpMetadata = () => {
+  private resetSearchMetadata = () => {
     this.inputMatches = []
     this.currentLineMatches = []
     this.availableJumpChars = Controller.generateValidJumpChars()
@@ -158,8 +158,8 @@ class Controller {
     }
   }
 
-  private jump = (jumpChar: string) => {
-    const range = this.associationManager.associations.get(jumpChar)
+  private jumpToJumpCharPosition = (char: string) => {
+    const range = this.associationManager.associations.get(char)
 
     if (!range) {
       return
@@ -174,14 +174,15 @@ class Controller {
       character,
     )
 
-    this.reset()
+    this.resetExtensionState()
   }
 
-  private reset = () => {
+  private resetExtensionState = () => {
     this.initiated = false
     this.initiatedWithSelection = false
     this.userInput = ''
     this.resetJumpAssociations()
+    this.resetSearchMetadata()
   }
 }
 
