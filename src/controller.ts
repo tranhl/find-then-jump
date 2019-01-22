@@ -1,6 +1,7 @@
 import {
   Selection,
   TextEditor,
+  Range,
 } from 'vscode'
 import {without} from 'ramda'
 import {InputBox} from './inputBox'
@@ -65,7 +66,7 @@ class Controller {
 
   private handleInputValueChange = (input: string, char: string) => {
     if (this.associationManager.associations.has(char)) {
-      this.jumpToJumpCharPosition(char)
+      this.jumpToCharAndCreateSelection(char)
       return
     }
 
@@ -158,23 +159,22 @@ class Controller {
     }
   }
 
-  private jumpToJumpCharPosition = (char: string) => {
+  private jumpToCharAndCreateSelection = (char: string) => {
     const range = this.associationManager.associations.get(char)
+    if (!range) return // This should never be the case -- line included to keep TypeScript happy.
+    this.textEditor.selection = this.createSelection(range)
+    this.resetExtensionState()
+  }
 
-    if (!range) {
-      return
-    }
-
+  private createSelection = (range: Range) => {
     const {line, character} = range.start
 
-    this.textEditor.selection = new Selection(
-      this.initiatedWithSelection ? this.textEditor.selection.start.line : line,
+    return new Selection(
+      this.initiateWithSelection ? this.textEditor.selection.start.line : line,
       this.initiatedWithSelection ? this.textEditor.selection.start.character : character,
       line,
       character,
     )
-
-    this.resetExtensionState()
   }
 
   private resetExtensionState = () => {
