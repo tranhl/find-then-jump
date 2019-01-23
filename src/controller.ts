@@ -150,11 +150,9 @@ class Controller {
   }
 
   private createJumpAssociations = () => {
-    if (this.availableJumpChars.length === 0) return
-
-    for (let i = 0; i < this.inputMatches.length; i += 1)  {
-      const match = this.inputMatches[i]
-      const availableJumpChar = this.availableJumpChars[i]
+    for (const match of this.inputMatches) {
+      const availableJumpChar = this.availableJumpChars.shift()
+      if (!availableJumpChar) return
       this.associationManager.createAssociation(availableJumpChar, match, this.textEditor)
     }
   }
