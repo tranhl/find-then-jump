@@ -30,7 +30,6 @@ class Controller {
   associationManager: AssociationManager
   initiated: boolean
   initiatedWithSelection: boolean
-  userInput: string
   inputMatches: { value: Match, index: number }[]
   currentLineMatches: Match[]
   availableJumpChars: string[] = Controller.generateValidJumpChars()
@@ -39,7 +38,6 @@ class Controller {
     this.associationManager = new AssociationManager()
     this.initiated = false
     this.initiatedWithSelection = false
-    this.userInput = ''
     this.inputMatches = []
     this.currentLineMatches = []
     this.availableJumpChars = Controller.generateValidJumpChars()
@@ -67,7 +65,7 @@ class Controller {
 
   private handleInputValueChange = (input: string, char: string) => {
     const association = this.associationManager.getAssociation(char)
-    
+
     if (association) {
       this.jumpToAssociation(association)
       return
@@ -77,13 +75,12 @@ class Controller {
       this.resetExtensionState()
       return
     }
-
-    this.userInput = input
-    this.displayNewJumpOptions()
+    
+    this.displayNewJumpOptions(input)
   }
   
-  private displayNewJumpOptions = () => {
-    this.updateJumpOptions()
+  private displayNewJumpOptions = (input: string) => {
+    this.updateJumpOptions(input)
 
     // New user input will generate new input matches, so to avoid duplicates
     // and ensure valid jump keys, we reset all current jump associations before
@@ -93,12 +90,12 @@ class Controller {
     this.resetSearchMetadata()
   }
 
-  private updateJumpOptions = () => {
+  private updateJumpOptions = (input: string) => {
     const {document, selection} = this.textEditor
     const documentLineIterator = createDocumentLineIterator(document, selection.end.line)
 
     for (const {index: lineIndex, line} of documentLineIterator) {
-      const needle = this.userInput.toLowerCase()
+      const needle = input.toLowerCase()
       const haystack = line.text.toLowerCase()
       this.updateInputMatches(lineIndex, needle, haystack)
     }
@@ -181,7 +178,6 @@ class Controller {
   private resetExtensionState = () => {
     this.initiated = false
     this.initiatedWithSelection = false
-    this.userInput = ''
     this.resetJumpAssociations()
     this.resetSearchMetadata()
   }
