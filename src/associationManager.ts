@@ -1,20 +1,16 @@
 import {
-  TextEditorDecorationType,
-  window,
-  ThemeColor,
   Range,
   TextEditor,
 } from 'vscode'
 
+import {Association} from './association'
 import {Match} from './controller'
 
 export class AssociationManager {
-  public activeDecorations: TextEditorDecorationType[]
-  public associations: Map<string, Range>
+  private activeAssociations: Map<string, Association>
 
   constructor() {
-    this.activeDecorations = []
-    this.associations = new Map()
+    this.activeAssociations = new Map()
   }
 
   public createAssociation = (
@@ -22,33 +18,23 @@ export class AssociationManager {
     {index: matchIndex, value: match}: {index: number, value: Match},
     textEditor: TextEditor
   ) => {
-    const jumpDecorationText = letter === letter.toUpperCase() ? `⇧${letter.toLowerCase()}` : letter
-    const jumpDecoration = this.createJumpDecoration(jumpDecorationText)
     const range = new Range(matchIndex, match.start, matchIndex, match.end)
+    const association = new Association(letter, range)
 
-    this.activeDecorations.push(jumpDecoration)
-    this.associations.set(letter, range)
-    textEditor.setDecorations(jumpDecoration, [range])
+    this.activeAssociations.set(letter, association)
+    textEditor.setDecorations(association.getDecoration(), [range])
   }
 
-  private createJumpDecoration = (decorationText: string) => {
-    return window.createTextEditorDecorationType({
-      backgroundColor: new ThemeColor('editor.wordHighlightBackground'),
-      before: {
-        contentText: decorationText,
-        margin: '0 5px 0 5px',
-        backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
-        border: '3px solid',
-        color: new ThemeColor('findThenJump.textDecorationForeground'),
-        borderColor: new ThemeColor('findThenJump.textDecorationBackground'),
-      },
-    })
+  public hasAssociation = (letter: string) => {
+    return this.activeAssociations.has(letter)
+  }
+
+  public getAssociation = (letter: string): Association | undefined => {
+    return this.activeAssociations.get(letter)
   }
 
   public dispose = () => {
-    this.activeDecorations.forEach((activeDecoration) => activeDecoration.dispose())
-
-    this.associations = new Map()
-    this.activeDecorations = []
+    this.activeAssociations.forEach((association) => association.dispose())
+    this.activeAssociations = new Map()
   }
 }

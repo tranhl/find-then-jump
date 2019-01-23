@@ -7,6 +7,7 @@ import {without} from 'ramda'
 import {InputBox} from './inputBox'
 import {createDocumentLineIterator} from './documentIterator'
 import {AssociationManager} from './associationManager'
+import {Association} from './association'
 
 type Match = {
   start: number,
@@ -65,8 +66,10 @@ class Controller {
   }
 
   private handleInputValueChange = (input: string, char: string) => {
-    if (this.associationManager.associations.has(char)) {
-      this.jumpToCharAndCreateSelection(char)
+    const association = this.associationManager.getAssociation(char)
+    
+    if (association) {
+      this.jumpToAssociation(association)
       return
     }
 
@@ -76,11 +79,11 @@ class Controller {
     }
 
     this.userInput = input
-    this.updateJumpPossibilities()
+    this.displayNewJumpOptions()
   }
   
-  private updateJumpPossibilities = () => {
-    this.updateInputMatchesAndAvailableJumpChars()
+  private displayNewJumpOptions = () => {
+    this.updateJumpOptions()
 
     // New user input will generate new input matches, so to avoid duplicates
     // and ensure valid jump keys, we reset all current jump associations before
@@ -90,7 +93,7 @@ class Controller {
     this.resetSearchMetadata()
   }
 
-  private updateInputMatchesAndAvailableJumpChars = () => {
+  private updateJumpOptions = () => {
     const {document, selection} = this.textEditor
     const documentLineIterator = createDocumentLineIterator(document, selection.end.line)
 
@@ -159,10 +162,8 @@ class Controller {
     }
   }
 
-  private jumpToCharAndCreateSelection = (char: string) => {
-    const range = this.associationManager.associations.get(char)
-    if (!range) return // This should never be the case -- line included to keep TypeScript happy.
-    this.textEditor.selection = this.createSelection(range)
+  private jumpToAssociation = (association: Association) => {
+    this.textEditor.selection = this.createSelection(association.getRange())
     this.resetExtensionState()
   }
 
