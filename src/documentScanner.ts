@@ -50,6 +50,12 @@ class DocumentScanner implements IterableIterator<any> {
       upperBoundaryReached: false,
       lowerBoundaryReached: false,
     }
+
+    // We want jump option updates to be as responsive as possible while the
+    // user is typing, so we optimise this by generating the order of lines that
+    // the scanner will go through while the extension is loading (it loads
+    // every time the keyboard shortcut is activated). This greatly simplifies
+    // the matching algorithm while the user is typing.
     this.iterationOrder = this.generateIterationOrder()
     this.documentIterator = this.createDocumentIterator(needle)
   }
@@ -62,8 +68,17 @@ class DocumentScanner implements IterableIterator<any> {
       return iterationOrder
     }
 
+    // The cursor might already be at a boundary, so we check for that first
+    // before entering the main generation loop.
     this.checkScannerBoundaries()
 
+    // We want jump options to appear as close to the user's cursor as possible,
+    // since that is where the user is probably looking. To achieve this, we
+    // generate the iteration order in a 'ripple' pattern originating from the
+    // initial cursor position.
+    // 
+    // i.e. We scan the line at the initial cursor position, the one below the
+    // initial, the one above the initial, then two above, two below, and so on.
     do {
       const nextCursorPosition = this.shiftCursorAndReverseScanDirection()
       iterationOrder.push(nextCursorPosition)
