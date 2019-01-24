@@ -1,25 +1,25 @@
 'use strict'
 import {commands, ExtensionContext} from 'vscode'
-import {FindThenJump} from './findThenJump'
-import {subscriptions as inlineInputSubscriptions} from './inputBox'
+import {Controller} from './controller'
+import {subscriptions as inputBoxSubscriptions} from './inputBox'
 
-const findThenJump = new FindThenJump()
+const controller = new Controller()
 
 export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerTextEditorCommand(
       'findThenJump.initiate',
-      findThenJump.initiate,
+      controller.initiate,
     ),
     commands.registerTextEditorCommand(
       'findThenJump.initiateWithSelection',
-      findThenJump.initiateWithSelection,
+      controller.initiateWithSelection,
     ),
   )
 }
 
 export function deactivate() {
-  const subscriptions = [...inlineInputSubscriptions]
+  const subscriptions = [...inputBoxSubscriptions]
 
   subscriptions.forEach(
     (subscription) => subscription.dispose(),
