@@ -5,7 +5,7 @@ import {
 } from 'vscode'
 import {without} from 'ramda'
 import {InputBox} from './inputBox'
-import {Match, DocumentScanner} from './documentIterator'
+import {Match, DocumentScanner} from './documentScanner'
 import {AssociationManager} from './associationManager'
 import {Association} from './association'
 

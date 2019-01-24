@@ -4,7 +4,7 @@ import {
 } from 'vscode'
 
 import {Association} from './association'
-import {Match} from './documentIterator'
+import {Match} from './documentScanner'
 
 export class AssociationManager {
   private activeAssociations: Map<string, Association>
