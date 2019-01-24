@@ -4,7 +4,7 @@ import {
 } from 'vscode'
 
 import {Association} from './association'
-import {Match} from './controller'
+import {Match} from './documentIterator'
 
 export class AssociationManager {
   private activeAssociations: Map<string, Association>
@@ -15,10 +15,11 @@ export class AssociationManager {
 
   public createAssociation = (
     letter: string, 
-    {index: matchIndex, value: match}: {index: number, value: Match},
+    match: Match,
     textEditor: TextEditor
   ) => {
-    const range = new Range(matchIndex, match.start, matchIndex, match.end)
+    const {lineIndex, matchStartIndex, matchEndIndex} = match
+    const range = new Range(lineIndex, matchStartIndex, lineIndex, matchEndIndex)
     const association = new Association(letter, range)
 
     this.activeAssociations.set(letter, association)

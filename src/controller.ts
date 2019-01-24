@@ -5,33 +5,21 @@ import {
 } from 'vscode'
 import {without} from 'ramda'
 import {InputBox} from './inputBox'
-import {createDocumentLineIterator} from './documentIterator'
+import {Match, DocumentScanner} from './documentIterator'
 import {AssociationManager} from './associationManager'
 import {Association} from './association'
 
-type Match = {
-  start: number,
-  end: number,
-  excludedChars: string[],
-}
-
 class Controller {
-  // When generating a list of valid jump characters, there are cases where
-  // the user continues typing, expecting to narrow down their search, but
-  // accidentally trigger a jump instead. By excluding letters ahead of the
-  // search match, we can prevent this from happening. This value was chosen
-  // through trial and error, and prevents the above case from happening.
-  static EXCLUSION_LOOKAHEAD_LENGTH = 8
   static generateValidJumpChars: () => string[]
     = () => [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ']
 
   textEditor: TextEditor | any
   inputBox: InputBox | any
   associationManager: AssociationManager
+  documentScanner: DocumentScanner | any
   initiated: boolean
   initiatedWithSelection: boolean
-  inputMatches: { value: Match, index: number }[]
-  currentLineMatches: Match[]
+  inputMatches: Match[]
   availableJumpChars: string[] = Controller.generateValidJumpChars()
 
   constructor() {
@@ -39,7 +27,6 @@ class Controller {
     this.initiated = false
     this.initiatedWithSelection = false
     this.inputMatches = []
-    this.currentLineMatches = []
     this.availableJumpChars = Controller.generateValidJumpChars()
   }
 
@@ -91,43 +78,24 @@ class Controller {
   }
 
   private updateJumpOptions = (input: string) => {
+    this.setupDocumentScanner(input)
+
+    for (const match of this.documentScanner) {
+      if (this.inputMatches.length >= this.availableJumpChars.length) return
+
+      this.removeExcludedCharsFromAvailableChars(match.excludedChars)
+      this.inputMatches.push(match)
+    }
+  }
+
+  private setupDocumentScanner = (input: string) => {
     const {document, selection} = this.textEditor
-    const documentLineIterator = createDocumentLineIterator(document, selection.end.line)
-
-    for (const {index: lineIndex, line} of documentLineIterator) {
-      const needle = input.toLowerCase()
-      const haystack = line.text.toLowerCase()
-      this.updateInputMatches(lineIndex, needle, haystack)
-    }
-  }
-
-  private updateInputMatches = (
-    lineIndex: number,
-    needle: string,
-    haystack: string
-  ) => {
-    for (let needleSearchIndex = 0;;) {
-      if ((needleSearchIndex = haystack.indexOf(needle, needleSearchIndex)) === -1) return
-      if (this.inputMatches.length > this.availableJumpChars.length) return
-
-      const matchStartIndex = needleSearchIndex
-      const matchEndIndex = needleSearchIndex + needle.length
-      const excludedChars = this.getExcludedChars(haystack, matchEndIndex)
-      const match = {start: matchStartIndex, end: matchEndIndex, excludedChars}
-
-      this.inputMatches.push({index: lineIndex, value: match})
-      this.removeExcludedCharsFromAvailableChars(excludedChars)
-
-      needleSearchIndex = matchEndIndex
-    }
-  }
-
-  private getExcludedChars = (haystack: string, matchEndIndex: number) => {
-    const haystackExclusionEndIndex = matchEndIndex + Controller.EXCLUSION_LOOKAHEAD_LENGTH
-    const haystackExclusionLookahead = haystack.slice(matchEndIndex, haystackExclusionEndIndex)
-    const filteredHaystackExclusionLookahead = haystackExclusionLookahead.replace(/[^a-z]/gi, '')
-
-    return [...filteredHaystackExclusionLookahead]
+    
+    this.documentScanner = new DocumentScanner(
+      document,
+      selection.end.line,
+      input.toLowerCase()
+    )
   }
 
   private removeExcludedCharsFromAvailableChars = (excludedChars: string[]) => {
@@ -143,18 +111,17 @@ class Controller {
     this.associationManager.dispose()
   }
 
-  private resetSearchMetadata = () => {
-    this.inputMatches = []
-    this.currentLineMatches = []
-    this.availableJumpChars = Controller.generateValidJumpChars()
-  }
-
   private createJumpAssociations = () => {
     for (const match of this.inputMatches) {
       const availableJumpChar = this.availableJumpChars.shift()
       if (!availableJumpChar) return
       this.associationManager.createAssociation(availableJumpChar, match, this.textEditor)
     }
+  }
+
+  private resetSearchMetadata = () => {
+    this.inputMatches = []
+    this.availableJumpChars = Controller.generateValidJumpChars()
   }
 
   private jumpToAssociation = (association: Association) => {
