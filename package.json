@@ -2,7 +2,7 @@
     "name": "find-then-jump",
     "displayName": "find-then-jump",
     "description": "",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "tranhl",
     "engines": {
         "vscode": "^1.30.0"
@@ -12,8 +12,8 @@
     ],
     "icon": "demo/icon.png",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/tranhl/find-then-jump.git"
+        "type": "git",
+        "url": "https://github.com/tranhl/find-then-jump.git"
     },
     "activationEvents": [
         "onCommand:findThenJump.initiate",
