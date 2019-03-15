@@ -9,7 +9,7 @@ the limitations of the original extension while adding additional functionality.
 
 ## Getting Started
 
-Bind the following keyboard shortcuts and you'll be ready to start using : 
+Bind the following keyboard shortcuts and you'll be ready to start using the extension: 
 
 - `findThenJump.initiate`: Starts a jump-search without text selection.
 - `findThenJump.initiateWithSelection`: Jump to a search term, selecting all text between the current cursor position and the search term.
