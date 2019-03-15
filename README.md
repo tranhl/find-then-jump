@@ -1,65 +1,33 @@
-# find-then-jump README
+# Find Then Jump
 
-This is the README for your extension "find-then-jump". After writing up a brief description, we recommend including the following sections.
+> [Vim Easymotion](https://github.com/easymotion/vim-easymotion) inspired code navigation.
 
-## Features
+This extension fork of [Find-Jump](https://github.com/msafi/xvsc/tree/master/findJump) that fixes
+the limitations of the original extension while adding additional functionality.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+![Usage demo](demo/demo.gif)
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
 
-\!\[feature X\]\(images/feature-x.png\)
+Bind the following keyboard shortcuts and you'll be ready to start using : 
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- `findThenJump.initiate`: Starts a jump-search without text selection.
+- `findThenJump.initiateWithSelection`: Jump to a search term, selecting all text between the current cursor position and the search term.
 
-## Requirements
+> ℹ️ No default keybindings are provided by this extension - you'll have to bind the commands yourself.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Theming
 
-## Extension Settings
+You can customize the colors of the text decorations that are displayed left of each text match:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+- `findThenJump.textDecorationForeground`: Controls text color of the text decoration.
+- `findThenJump.textDecorationBackground`: Controls the background color of the text decoration.
 
-For example:
+## Bugs & Suggestions
 
-This extension contributes the following settings:
+Feel free to create an [issue](https://github.com/tranhl/find-then-jump/issues)
+outlining the bug or suggestion!
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+## Change Log
 
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[See here.](CHANGELOG.md)

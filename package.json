@@ -10,6 +10,10 @@
     "categories": [
         "Other"
     ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/tranhl/find-then-jump.git"
+    },
     "activationEvents": [
         "onCommand:findThenJump.initiate",
         "onCommand:findThenJump.initiateWithSelection"
@@ -44,6 +48,10 @@
                     "light": "#4169E1",
                     "highContrast": "#4169E1"
                 }
+            },
+            {
+                "id": "findThenJump.highlightedTextBackground",
+                "description": "Background color of text matches"
             }
         ]
     },
