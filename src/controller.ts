@@ -133,7 +133,7 @@ class Controller {
     const {line, character} = range.start
 
     return new Selection(
-      this.initiateWithSelection ? this.textEditor.selection.start.line : line,
+      this.initiatedWithSelection ? this.textEditor.selection.start.line : line,
       this.initiatedWithSelection ? this.textEditor.selection.start.character : character,
       line,
       character,
