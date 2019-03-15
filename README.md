@@ -31,3 +31,9 @@ outlining the bug or suggestion!
 ## Change Log
 
 [See here.](CHANGELOG.md)
+
+## Copyright
+
+Extension icon made by [Freepik](https://www.freepik.com),
+from [FlatIcon](https://www.flaticon.com),
+under a [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0) license.
