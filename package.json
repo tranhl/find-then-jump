@@ -1,7 +1,7 @@
 {
     "name": "find-then-jump",
     "displayName": "Find Then Jump",
-    "description": "",
+    "description": "Vim Easymotion inspired code navigation.",
     "version": "1.0.0",
     "publisher": "tranhl",
     "engines": {
