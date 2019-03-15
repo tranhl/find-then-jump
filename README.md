@@ -5,7 +5,7 @@
 This extension fork of [Find-Jump](https://github.com/msafi/xvsc/tree/master/findJump) that fixes
 the limitations of the original extension while adding additional functionality.
 
-![Usage demo](demo/demo.gif)
+![Usage demo](/demo/demo.gif?raw=true "Usage demo")
 
 ## Getting Started
 
