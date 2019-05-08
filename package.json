@@ -2,7 +2,7 @@
     "name": "find-then-jump",
     "displayName": "Find Then Jump",
     "description": "Vim Easymotion inspired code navigation.",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "publisher": "tranhl",
     "engines": {
         "vscode": "^1.30.0"
@@ -15,7 +15,9 @@
         "type": "git",
         "url": "https://github.com/tranhl/find-then-jump.git"
     },
-    "activationEvents": ["*"],
+    "activationEvents": [
+        "*"
+    ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
