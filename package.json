@@ -15,10 +15,7 @@
         "type": "git",
         "url": "https://github.com/tranhl/find-then-jump.git"
     },
-    "activationEvents": [
-        "onCommand:findThenJump.initiate",
-        "onCommand:findThenJump.initiateWithSelection"
-    ],
+    "activationEvents": ["*"],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
