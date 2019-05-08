@@ -49,10 +49,6 @@
                     "light": "#4169E1",
                     "highContrast": "#4169E1"
                 }
-            },
-            {
-                "id": "findThenJump.highlightedTextBackground",
-                "description": "Background color of text matches"
             }
         ]
     },
