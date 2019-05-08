@@ -18,10 +18,21 @@ Bind the following keyboard shortcuts and you'll be ready to start using the ext
 
 ## Theming
 
-You can customize the colors of the text decorations that are displayed left of each text match:
+You can customize the colors of the text decorations that are displayed left of each text match by adding the following settings to `settings.json`:
 
 - `findThenJump.textDecorationForeground`: Controls text color of the text decoration.
 - `findThenJump.textDecorationBackground`: Controls the background color of the text decoration.
+
+Example `settings.json`:
+
+```json
+{
+    "workspace.colorCustomizations": {
+        "findThenJump.textDecorationForeground": "#FFFFFF",
+        "findThenJump.textDecorationBackground": "#000000"
+    }
+}
+```
 
 ## Bugs & Suggestions
 
