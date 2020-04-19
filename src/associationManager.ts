@@ -3,7 +3,7 @@ import {
   TextEditor,
 } from 'vscode'
 
-import {Association} from './association'
+import {Association} from './Association'
 import {Match} from './documentScanner'
 
 export class AssociationManager {
@@ -19,11 +19,15 @@ export class AssociationManager {
     textEditor: TextEditor
   ) => {
     const {lineIndex, matchStartIndex, matchEndIndex} = match
-    const range = new Range(lineIndex, matchStartIndex, lineIndex, matchEndIndex)
-    const association = new Association(letter, range)
+    const selection = new Range(lineIndex, matchStartIndex, lineIndex, matchEndIndex)
+    const association = new Association(letter, selection, lineIndex, matchStartIndex)
+    const {foreground, background} = association.getDecorations()
+    const {foregroundRange, backgroundRange} = association.getRanges()
 
+    textEditor.setDecorations(foreground, [foregroundRange])
+    textEditor.setDecorations(background, [backgroundRange])
+    
     this.activeAssociations.set(letter, association)
-    textEditor.setDecorations(association.getDecoration(), [range])
   }
 
   public hasAssociation = (letter: string) => {
