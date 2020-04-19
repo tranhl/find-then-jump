@@ -2,7 +2,7 @@
     "name": "find-then-jump",
     "displayName": "Find Then Jump",
     "description": "Vim Easymotion inspired code navigation.",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "publisher": "tranhl",
     "engines": {
         "vscode": "^1.30.0"
@@ -18,7 +18,7 @@
     "activationEvents": [
         "*"
     ],
-    "main": "./out/src/extension",
+    "main": "./dist/extension.js",
     "contributes": {
         "commands": [
             {
@@ -52,17 +52,23 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
+        "vscode:prepublish": "webpack --mode production",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+        "webpack": "webpack --mode development",
+        "webpack-dev": "webpack --mode development --watch",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test",
+        "test-compile": "tsc -p ./"
     },
     "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^8.10.25",
+        "ts-loader": "^7.0.0",
         "typescript": "^2.6.1",
         "vscode": "^1.1.21",
-        "@types/node": "^8.10.25",
-        "@types/mocha": "^2.2.42"
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11"
     },
     "dependencies": {
         "@types/ramda": "^0.25.47",
