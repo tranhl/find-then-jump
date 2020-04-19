@@ -6,46 +6,54 @@ import {
 } from 'vscode'
 
 class Association {
-  private decoration: TextDecoration
-  private range: Range
+  private foreground: TextDecoration
+  private background: TextDecoration
+  private foregroundRange: Range
+  private backgroundRange: Range
+  private selection: Range
 
-  constructor(letter: string, range: Range) {
-    this.decoration = this.createDecoration(letter)
-    this.range = range
-  }
-
-  private createDecoration = (letter: string) => {
-    return window.createTextEditorDecorationType({
-      backgroundColor: new ThemeColor('editor.wordHighlightBackground'),
-      before: {
-        contentText: this.addIconIfUppercase(letter),
-        margin: '0 5px 0 5px',
-        backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
-        border: '3px solid',
+  constructor(letter: string, selection: Range, lineIndex: number, matchStartIndex: number) {
+    this.foregroundRange = new Range(lineIndex, matchStartIndex, lineIndex, matchStartIndex)
+    this.backgroundRange = new Range(lineIndex, matchStartIndex, lineIndex, matchStartIndex + 1)
+    
+    this.foreground = window.createTextEditorDecorationType({
+      after: {
+        contentText: letter,
         color: new ThemeColor('findThenJump.textDecorationForeground'),
-        borderColor: new ThemeColor('findThenJump.textDecorationBackground'),
+        width: '0',
+        fontWeight: '400'
       },
     })
-  }
-  
-  private addIconIfUppercase = (letter: string): string => {
-    const lowercaseLetter = letter.toLowerCase()
+    this.background = window.createTextEditorDecorationType({
+      backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
+      color: 'transparent',
+      borderRadius: '2px',
+    })
 
-    return letter !== lowercaseLetter
-      ? '⇧' + lowercaseLetter
-      : letter
-  }
-
-  public getDecoration = (): TextDecoration => {
-    return this.decoration
+    this.selection = selection
   }
 
-  public getRange = (): Range => {
-    return this.range
+  public getDecorations = (): {foreground: TextDecoration, background: TextDecoration} => {
+    return {
+      foreground: this.foreground,
+      background: this.background
+    }
+  }
+
+  public getRanges = (): {foregroundRange: Range, backgroundRange: Range} => {
+    return {
+      foregroundRange: this.foregroundRange,
+      backgroundRange: this.backgroundRange,
+    }
+  }
+
+  public getSelection = (): Range => {
+    return this.selection
   }
 
   public dispose = () => {
-    this.decoration.dispose()
+    this.foreground.dispose()
+    this.background.dispose()
   }
 }
 

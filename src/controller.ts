@@ -125,7 +125,7 @@ class Controller {
   }
 
   private jumpToAssociation = (association: Association) => {
-    this.textEditor.selection = this.createSelection(association.getRange())
+    this.textEditor.selection = this.createSelection(association.getSelection())
     this.resetExtensionState()
   }
 
