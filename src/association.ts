@@ -26,7 +26,7 @@ class Association {
     })
     this.background = window.createTextEditorDecorationType({
       backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
-      color: 'transparent',
+      opacity: '0',
       borderRadius: '2px',
     })
 
