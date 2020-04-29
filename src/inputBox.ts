@@ -17,7 +17,6 @@ class InputBox {
     onCancel(...args: any[]): any,
   }) {
     this.inputBox = this.instantiateAndShowInputBox()
-    this.subscribeToCancellationEventSources()
   }
   
   private instantiateAndShowInputBox = () => {
@@ -31,12 +30,6 @@ class InputBox {
     return inputBox
   }
 
-  private subscribeToCancellationEventSources = () => {
-    subscriptions.push(
-      window.onDidChangeTextEditorSelection(this.handleCancel),
-    )
-  }
-  
   public destroy = () => {
     this.inputBox.dispose()
     subscriptions.forEach((subscription) => subscription.dispose())
