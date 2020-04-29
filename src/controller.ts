@@ -145,6 +145,7 @@ class Controller {
     this.initiatedWithSelection = false
     this.resetJumpAssociations()
     this.resetSearchMetadata()
+    this.inputBox.destroy()
   }
 }
 
