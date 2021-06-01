@@ -49,7 +49,10 @@
                     "highContrast": "#4169E1"
                 }
             }
-        ]
+        ],
+        "untrustedWorkspaces": {
+            "supported": true
+        }
     },
     "scripts": {
         "vscode:prepublish": "webpack --mode production",
