@@ -2,7 +2,7 @@
     "name": "find-then-jump",
     "displayName": "Find Then Jump",
     "description": "Vim Easymotion inspired code navigation.",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "publisher": "tranhl",
     "engines": {
         "vscode": "^1.30.0"
@@ -69,7 +69,7 @@
         "@types/node": "^8.10.25",
         "ts-loader": "^7.0.0",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.21",
+        "vscode": "^1.1.37",
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11"
     },
