@@ -71,7 +71,7 @@
         "typescript": "^2.6.1",
         "vscode": "^1.1.37",
         "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+        "webpack-cli": "^3.3.12"
     },
     "dependencies": {
         "@types/ramda": "^0.25.47",
