@@ -16,7 +16,7 @@
         "url": "https://github.com/tranhl/find-then-jump.git"
     },
     "activationEvents": [
-        "*"
+        "onStartupFinished"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -70,8 +70,8 @@
         "ts-loader": "^7.0.0",
         "typescript": "^2.6.1",
         "vscode": "^1.1.37",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+        "webpack": "^4.47.0",
+        "webpack-cli": "^3.3.12"
     },
     "dependencies": {
         "@types/ramda": "^0.25.47",
