@@ -3,7 +3,7 @@ import {
   TextEditor,
 } from 'vscode'
 
-import {Association} from './Association'
+import {Association} from './association'
 import {Match} from './documentScanner'
 
 export class AssociationManager {
