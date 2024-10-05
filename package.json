@@ -2,7 +2,7 @@
     "name": "find-then-jump-2",
     "displayName": "Find Then Jump 2",
     "description": "leap.nvim inspired code navigation.",
-    "version": "2.0.6",
+    "version": "2.0.7",
     "publisher": "darianmorat",
     "engines": {
         "vscode": "^1.30.0"
@@ -13,7 +13,7 @@
     "icon": "demo/icon.png",
     "repository": {
         "type": "git",
-        "url": "https://github.com/tranhl/find-then-jump.git"
+        "url": "https://github.com/darianmorat/find-then-jump-2"
     },
     "activationEvents": [
         "onStartupFinished"
