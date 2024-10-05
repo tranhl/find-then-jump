@@ -1,9 +1,9 @@
 {
-    "name": "find-then-jump",
-    "displayName": "Find Then Jump",
-    "description": "Vim Easymotion inspired code navigation.",
-    "version": "2.0.5",
-    "publisher": "tranhl",
+    "name": "find-then-jump-2",
+    "displayName": "Find Then Jump 2",
+    "description": "leap.nvim inspired code navigation.",
+    "version": "2.0.6",
+    "publisher": "darianmorat",
     "engines": {
         "vscode": "^1.30.0"
     },
@@ -22,31 +22,31 @@
     "contributes": {
         "commands": [
             {
-                "command": "findThenJump.initiate",
+                "command": "findThenJump2.initiate",
                 "title": "Find Then Jump"
             },
             {
-                "command": "findThenJump.initiateWithSelection",
+                "command": "findThenJump2.initiateWithSelection",
                 "title": "Find Then Jump With Selection"
             }
         ],
         "colors": [
             {
-                "id": "findThenJump.textDecorationForeground",
+                "id": "findThenJump2.textDecorationForeground",
                 "description": "Foreground color of decorations that appear to the left of search term matches.",
                 "defaults": {
-                    "dark": "#FFF",
-                    "light": "#FFF",
-                    "highContrast": "#FFF"
+                    "dark": "#f3f2f2",
+                    "light": "#f3f2f2",
+                    "highContrast": "#f3f2f2"
                 }
             },
             {
-                "id": "findThenJump.textDecorationBackground",
+                "id": "findThenJump2.textDecorationBackground",
                 "description": "Background color of decorations that appear to the left of search term matches.",
                 "defaults": {
-                    "dark": "#4169E1",
-                    "light": "#4169E1",
-                    "highContrast": "#4169E1"
+                    "dark": "#2f55c9",
+                    "light": "#2f55c9",
+                    "highContrast": "#2f55c9"
                 }
             }
         ],
