@@ -119,6 +119,11 @@ class DocumentScanner implements IterableIterator<any> {
   }
 
   private* createDocumentIterator(needle: string): Iterator<any> {
+    if (needle.length < 2) {
+      // Skip processing if the needle is less than 2 characters
+      return
+    }
+    
     for (const currentLine of this.iterationOrder) {
       const haystack = this.getLineText(currentLine).toLowerCase()
 
