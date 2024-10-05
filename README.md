@@ -1,35 +1,41 @@
-# Find Then Jump
+# Find Then Jump 2
 
-> [Vim Easymotion](https://github.com/easymotion/vim-easymotion) inspired code navigation.
+> [leap.nvim](https://github.com/ggandor/leap.nvim) inspired code navigation.
 
-This extension fork of [Find-Jump](https://github.com/msafi/xvsc/tree/master/findJump) that fixes
-the limitations of the original extension while adding additional functionality.
-
-![Usage demo](/demo/demo.gif?raw=true "Usage demo")
+This extension is fork of [find-then-jump](https://github.com/tranhl/find-then-jump) with a few modifications to better mimic leap-like motion behavior.
 
 ## Getting Started
 
-Bind the following keyboard shortcuts and you'll be ready to start using the extension: 
+Available keyboard shortcuts in order to use the extension: 
 
 - `findThenJump.initiate`: Starts a jump-search without text selection.
 - `findThenJump.initiateWithSelection`: Jump to a search term, selecting all text between the current cursor position and the search term.
 
-> ℹ️ No default keybindings are provided by this extension - you'll have to bind the commands yourself.
+Example in `settings.json` using [vscode-vim](https://github.com/VSCodeVim/Vim/):
+```json
+   "vim.normalModeKeyBindingsNonRecursive": [
+      { "before": ["s"], "commands": ["findThenJump2.initiate"] },
+   ]
+
+   "vim.visualModeKeyBindings": [
+      { "before": ["s"], "after": [""], "commands": ["findThenJump2.initiateWithSelection"] },
+   ]
+```
 
 ## Theming
 
-You can customize the colors of the text decorations that are displayed left of each text match by adding the following settings to `settings.json`:
+You can customize the match colors displayed by adding the following in `settings.json`:
 
 - `findThenJump.textDecorationForeground`: Controls text color of the text decoration.
 - `findThenJump.textDecorationBackground`: Controls the background color of the text decoration.
 
-Example `settings.json`:
+Example in `settings.json`:
 
 ```json
 {
     "workspace.colorCustomizations": {
-        "findThenJump.textDecorationForeground": "#FFFFFF",
-        "findThenJump.textDecorationBackground": "#000000"
+        "findThenJump2.textDecorationForeground": "#FFFFFF",
+        "findThenJump2.textDecorationBackground": "#000000"
     }
 }
 ```
