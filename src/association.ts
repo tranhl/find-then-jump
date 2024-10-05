@@ -19,13 +19,13 @@ class Association {
     this.foreground = window.createTextEditorDecorationType({
       after: {
         contentText: letter,
-        color: new ThemeColor('findThenJump.textDecorationForeground'),
+        color: new ThemeColor('findThenJump2.textDecorationForeground'),
         width: '0',
         fontWeight: '400'
       },
     })
     this.background = window.createTextEditorDecorationType({
-      backgroundColor: new ThemeColor('findThenJump.textDecorationBackground'),
+      backgroundColor: new ThemeColor('findThenJump2.textDecorationBackground'),
       opacity: '0',
       borderRadius: '0px',
     })

@@ -8,11 +8,11 @@ const controller = new Controller()
 export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerTextEditorCommand(
-      'findThenJump.initiate',
+      'findThenJump2.initiate',
       controller.initiate,
     ),
     commands.registerTextEditorCommand(
-      'findThenJump.initiateWithSelection',
+      'findThenJump2.initiateWithSelection',
       controller.initiateWithSelection,
     ),
   )
