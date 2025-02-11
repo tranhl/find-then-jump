@@ -70,8 +70,8 @@
         "ts-loader": "^7.0.0",
         "typescript": "^2.6.1",
         "vscode": "^1.1.37",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+        "webpack": "^5.97.1",
+        "webpack-cli": "^6.0.1"
     },
     "dependencies": {
         "@types/ramda": "^0.25.47",
