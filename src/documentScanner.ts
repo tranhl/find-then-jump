@@ -1,4 +1,5 @@
 import {TextDocument} from 'vscode'
+import { ExtensionConfiguration, getConfiguration } from './configuration'
 
 type Match = {
   lineIndex: number,
@@ -31,11 +32,13 @@ class DocumentScanner implements IterableIterator<any> {
   static EXCLUSION_LOOKAHEAD_LENGTH: number = 8
   static ITERATION_LIMIT: number = 200
   static NON_ALPHABETS: RegExp = /[^a-z]/gi
+  static WORD_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
 
   readonly document: TextDocument
   scannerState: ScannerState
   iterationOrder: number[]
   documentIterator: Iterator<any>
+  configuration: ExtensionConfiguration
 
   constructor(document: Readonly<TextDocument>, initialLineNumber: number, needle: string) {
     this.document = document
@@ -53,6 +56,7 @@ class DocumentScanner implements IterableIterator<any> {
     // the scanner will go through while the extension is loading (it loads
     // every time the keyboard shortcut is activated). This greatly simplifies
     // the matching algorithm while the user is typing.
+    this.configuration = getConfiguration()
     this.iterationOrder = this.generateIterationOrder()
     this.documentIterator = this.createDocumentIterator(needle)
   }
@@ -120,7 +124,8 @@ class DocumentScanner implements IterableIterator<any> {
 
   private* createDocumentIterator(needle: string): Iterator<any> {
     for (const currentLine of this.iterationOrder) {
-      const haystack = this.getLineText(currentLine).toLowerCase()
+      const line = this.getLineText(currentLine)
+      const haystack = line.toLowerCase()
 
       // It's common to have many matches for any given search term (needle) on
       // any line of text. String.prototype.indexOf() only returns the index of 
@@ -130,6 +135,15 @@ class DocumentScanner implements IterableIterator<any> {
         needleSearchResumePosition = haystack.indexOf(needle, needleSearchResumePosition)
         const noMatchFound = needleSearchResumePosition === -1
         if (noMatchFound) break
+
+        if (this.configuration.findOnlyStartOfWords) {
+          // Further filter out the 'inside a word' matches
+          const substr = line.slice(Math.max(needleSearchResumePosition - 1, 0), needleSearchResumePosition + needle.length)
+          if (!substr.match(DocumentScanner.WORD_START)) {
+            needleSearchResumePosition += needle.length
+            continue
+          }
+        }
 
         const matchStartIndex = needleSearchResumePosition
         const matchEndIndex = needleSearchResumePosition + needle.length

@@ -50,6 +50,18 @@
                 }
             }
         ],
+        "configuration": [
+            {
+                "title": "findThenJump configurations",
+                "properties": {
+                    "findThenJump.findOnlyStartOfWords": {
+                        "type": "boolean",
+                        "description": "Use word start regex instead of finding characters inside words.",
+                        "default": true
+                    }
+                }
+            }
+        ],
         "untrustedWorkspaces": {
             "supported": true
         }
