@@ -49,7 +49,7 @@ class DocumentScanner implements IterableIterator<any> {
     }
 
     // We want jump option updates to be as responsive as possible while the
-    // user is typing, so we optimise this by generating the order of lines that
+    // user is typing, so we optimize this by generating the order of lines that
     // the scanner will go through while the extension is loading (it loads
     // every time the keyboard shortcut is activated). This greatly simplifies
     // the matching algorithm while the user is typing.
@@ -124,7 +124,7 @@ class DocumentScanner implements IterableIterator<any> {
 
       // It's common to have many matches for any given search term (needle) on
       // any line of text. String.prototype.indexOf() only returns the index of 
-      // the *fist* match, so we need to keep track of this and continue the
+      // the *first* match, so we need to keep track of this and continue the
       // search until we reach the end of the line.
       for (let needleSearchResumePosition = 0;;) {
         needleSearchResumePosition = haystack.indexOf(needle, needleSearchResumePosition)
@@ -147,10 +147,9 @@ class DocumentScanner implements IterableIterator<any> {
 
   private getExcludedChars = (haystack: string, matchEndIndex: number) => {
     const haystackExclusionEndIndex = matchEndIndex + DocumentScanner.EXCLUSION_LOOKAHEAD_LENGTH
-    const unfilteredExcludedChars = haystack.slice(matchEndIndex, haystackExclusionEndIndex)
-    const filteredExcludedChars = unfilteredExcludedChars.replace(DocumentScanner.NON_ALPHABETS, '')
+    const unfilteredExcludedChars = haystack.slice(matchEndIndex, haystackExclusionEndIndex).split(DocumentScanner.NON_ALPHABETS)[0]
 
-    return [...filteredExcludedChars]
+    return [...unfilteredExcludedChars]
   }
 
   private createMatch = (

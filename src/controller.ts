@@ -79,10 +79,9 @@ class Controller {
 
   private updateJumpOptions = (input: string) => {
     this.setupDocumentScanner(input)
+    if (this.inputMatches.length >= this.availableJumpChars.length) return
 
     for (const match of this.documentScanner) {
-      if (this.inputMatches.length >= this.availableJumpChars.length) return
-
       this.removeExcludedCharsFromAvailableChars(match.excludedChars)
       this.inputMatches.push(match)
     }
