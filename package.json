@@ -57,7 +57,7 @@
                     "findThenJump.findOnlyStartOfWords": {
                         "type": "boolean",
                         "description": "Use word start regex instead of finding characters inside words.",
-                        "default": true
+                        "default": false
                     }
                 }
             }
