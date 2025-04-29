@@ -59,8 +59,8 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "webpack": "webpack --mode development",
-        "webpack-dev": "webpack --mode development --watch",
+        "webpack": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development",
+        "webpack-dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development --watch",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",
         "test-compile": "tsc -p ./"
     },
