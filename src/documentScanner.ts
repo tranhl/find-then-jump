@@ -32,7 +32,7 @@ class DocumentScanner implements IterableIterator<any> {
   static EXCLUSION_LOOKAHEAD_LENGTH: number = 8
   static ITERATION_LIMIT: number = 200
   static NON_ALPHABETS: RegExp = /[^a-z]/gi
-  static WORD_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
+  static WORD_START: RegExp = /^(([a-z]|[A-Z])?[^a-zA-Z]|[a-z][A-Z])/g
 
   readonly document: TextDocument
   scannerState: ScannerState
