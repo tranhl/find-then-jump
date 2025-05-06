@@ -55,10 +55,15 @@
             {
                 "title": "findThenJump configurations",
                 "properties": {
-                    "findThenJump.findOnlyStartOfWords": {
-                        "type": "boolean",
-                        "description": "Use word start regex instead of finding characters inside words.",
-                        "default": false
+                    "findThenJump.matchAlgorithm": {
+                        "type": "string",
+                        "description": "Algorithm to use for matching. Can be 'default', 'word-start' or 'alpha-start'.",
+                        "default": "default",
+                        "enum": [
+                            "default",
+                            "word-start",
+                            "alpha-start"
+                        ]
                     }
                 }
             }

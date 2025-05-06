@@ -16,6 +16,14 @@ Bind the following keyboard shortcuts and you'll be ready to start using the ext
 
 > ℹ️ No default keybindings are provided by this extension - you'll have to bind the commands yourself.
 
+- `findThenJump.matchAlgorithm`: Specify the algorithm used for matching text for navigation.
+
+Available options are:
+
+- `default`: Matches any text. (default)
+- `word-start`: Matches the start of alphanumerical or special character sequences separated by whitespace.
+- `alpha-start`: Matches the start of alphanumerical-only character sequences separated by whitespace.
+
 ## Theming
 
 You can customize the colors of the text decorations that are displayed left of each text match by adding the following settings to `settings.json`:

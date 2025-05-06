@@ -32,7 +32,8 @@ class DocumentScanner implements IterableIterator<any> {
   static EXCLUSION_LOOKAHEAD_LENGTH: number = 8
   static ITERATION_LIMIT: number = 200
   static NON_ALPHABETS: RegExp = /[^a-z]/gi
-  static WORD_START: RegExp = /^(([a-z]|[A-Z])?[^a-zA-Z]|[a-z][A-Z])/g
+  static ALPHA_START: RegExp = /^(([a-z]|[A-Z])?[^a-zA-Z]|[a-z][A-Z])/g
+  static WORD_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
 
   readonly document: TextDocument
   scannerState: ScannerState
@@ -122,7 +123,18 @@ class DocumentScanner implements IterableIterator<any> {
     }
   }
 
+  private getMatchRegex(): RegExp | null {
+    if(this.configuration.matchAlgorithm === 'word-start') {
+      return DocumentScanner.WORD_START
+    }
+    if(this.configuration.matchAlgorithm === 'alpha-start') {
+      return DocumentScanner.ALPHA_START
+    }
+    return null
+  }
+
   private* createDocumentIterator(needle: string): Iterator<any> {
+    const matchRegex = this.getMatchRegex()
     for (const currentLine of this.iterationOrder) {
       const line = this.getLineText(currentLine)
       const haystack = line.toLowerCase()
@@ -136,10 +148,10 @@ class DocumentScanner implements IterableIterator<any> {
         const noMatchFound = needleSearchResumePosition === -1
         if (noMatchFound) break
 
-        if (this.configuration.findOnlyStartOfWords) {
+        if (matchRegex != null) {
           // Further filter out the 'inside a word' matches
           const substr = line.slice(Math.max(needleSearchResumePosition - 1, 0), needleSearchResumePosition + needle.length)
-          if (!substr.match(DocumentScanner.WORD_START)) {
+          if (!substr.match(matchRegex)) {
             needleSearchResumePosition += needle.length
             continue
           }
