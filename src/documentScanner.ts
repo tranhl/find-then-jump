@@ -148,10 +148,11 @@ class DocumentScanner implements IterableIterator<any> {
         const noMatchFound = needleSearchResumePosition === -1
         if (noMatchFound) break
 
-        if (matchRegex != null) {
+        if (matchRegex != null && needleSearchResumePosition > 0) {
           // Further filter out the 'inside a word' matches
-          const substr = line.slice(Math.max(needleSearchResumePosition - 1, 0), needleSearchResumePosition + needle.length)
-          if (!substr.match(matchRegex)) {
+          const substr = line.slice(needleSearchResumePosition - 1, needleSearchResumePosition + needle.length)
+          const isWordStartLike = substr.match(matchRegex)
+          if (!isWordStartLike) {
             needleSearchResumePosition += needle.length
             continue
           }
