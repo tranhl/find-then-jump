@@ -173,9 +173,10 @@ class DocumentScanner implements IterableIterator<any> {
 
   private getExcludedChars = (haystack: string, matchEndIndex: number) => {
     const haystackExclusionEndIndex = matchEndIndex + DocumentScanner.EXCLUSION_LOOKAHEAD_LENGTH
-    const unfilteredExcludedChars = haystack.slice(matchEndIndex, haystackExclusionEndIndex).split(DocumentScanner.NON_ALPHABETS)[0]
+    const unfilteredExcludedChars = haystack.slice(matchEndIndex, haystackExclusionEndIndex)
+    const filteredExcludedChars = unfilteredExcludedChars.replace(DocumentScanner.NON_ALPHABETS, '')
 
-    return [...unfilteredExcludedChars]
+    return [...filteredExcludedChars]
   }
 
   private createMatch = (
