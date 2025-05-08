@@ -1,98 +1,105 @@
 {
-    "name": "find-then-jump",
-    "displayName": "Find Then Jump",
-    "description": "Vim Easymotion inspired code navigation.",
-    "version": "2.0.5",
-    "publisher": "tranhl",
-    "engines": {
-        "vscode": "^1.30.0"
-    },
-    "categories": [
-        "Other"
+  "name": "find-then-jump",
+  "displayName": "Find Then Jump",
+  "description": "Vim Easymotion inspired code navigation.",
+  "version": "2.0.5",
+  "publisher": "tranhl",
+  "engines": {
+    "vscode": "^1.30.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "demo/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tranhl/find-then-jump.git"
+  },
+  "activationEvents": [
+    "onCommand:findThenJump.initiate",
+    "onCommand:findThenJump.initiateWithSelection"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "findThenJump.initiate",
+        "title": "Find Then Jump"
+      },
+      {
+        "command": "findThenJump.initiateWithSelection",
+        "title": "Find Then Jump With Selection"
+      }
     ],
-    "icon": "demo/icon.png",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/tranhl/find-then-jump.git"
-    },
-    "activationEvents": [
-        "onCommand:findThenJump.initiate",
-        "onCommand:findThenJump.initiateWithSelection"
-    ],
-    "main": "./dist/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "findThenJump.initiate",
-                "title": "Find Then Jump"
-            },
-            {
-                "command": "findThenJump.initiateWithSelection",
-                "title": "Find Then Jump With Selection"
-            }
-        ],
-        "colors": [
-            {
-                "id": "findThenJump.textDecorationForeground",
-                "description": "Foreground color of decorations that appear to the left of search term matches.",
-                "defaults": {
-                    "dark": "#FFF",
-                    "light": "#FFF",
-                    "highContrast": "#FFF"
-                }
-            },
-            {
-                "id": "findThenJump.textDecorationBackground",
-                "description": "Background color of decorations that appear to the left of search term matches.",
-                "defaults": {
-                    "dark": "#4169E1",
-                    "light": "#4169E1",
-                    "highContrast": "#4169E1"
-                }
-            }
-        ],
-        "configuration": [
-            {
-                "title": "findThenJump configurations",
-                "properties": {
-                    "findThenJump.matchAlgorithm": {
-                        "type": "string",
-                        "description": "Algorithm to use for matching. Can be 'default', 'word-start' or 'alpha-start'.",
-                        "default": "default",
-                        "enum": [
-                            "default",
-                            "word-start",
-                            "alpha-start"
-                        ]
-                    }
-                }
-            }
-        ],
-        "untrustedWorkspaces": {
-            "supported": true
+    "colors": [
+      {
+        "id": "findThenJump.textDecorationForeground",
+        "description": "Foreground color of decorations that appear to the left of search term matches.",
+        "defaults": {
+          "dark": "#FFF",
+          "light": "#FFF",
+          "highContrast": "#FFF"
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "webpack --mode production",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "webpack": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development",
-        "webpack-dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development --watch",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test",
-        "test-compile": "tsc -p ./"
-    },
-    "devDependencies": {
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^8.10.25",
-        "ts-loader": "^7.0.0",
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.37",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
-    },
-    "dependencies": {
-        "@types/ramda": "^0.25.47",
-        "ramda": "^0.26.1"
+      },
+      {
+        "id": "findThenJump.textDecorationBackground",
+        "description": "Background color of decorations that appear to the left of search term matches.",
+        "defaults": {
+          "dark": "#4169E1",
+          "light": "#4169E1",
+          "highContrast": "#4169E1"
+        }
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Find Then Jump",
+        "properties": {
+          "findThenJump.matchBehavior": {
+            "type": "string",
+            "description": "Restrict the location of matches.",
+            "default": "default",
+            "enum": [
+              "default",
+              "word-start"
+            ],
+            "enumDescriptions": [
+              "No restrictions on the location of matches within the document.",
+              "Restrict matches for alpha-numerical search terms to the start of words.."
+            ],
+            "enumItemLabels": [
+              "Default",
+              "Word Start"
+            ]
+          }
+        }
+      }
+    ],
+    "untrustedWorkspaces": {
+      "supported": true
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "webpack --mode production",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "webpack": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development",
+    "webpack-dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development --watch",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "test-compile": "tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "ts-loader": "^7.0.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.37",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@types/ramda": "^0.25.47",
+    "ramda": "^0.26.1"
+  }
 }

@@ -9,20 +9,46 @@ the limitations of the original extension while adding additional functionality.
 
 ## Getting Started
 
-Bind the following keyboard shortcuts and you'll be ready to start using the extension: 
+> [!IMPORTANT]
+> No default keybindings are provided by this extension.
+
+To get started, create keybindings for the following commands:
 
 - `findThenJump.initiate`: Starts a jump-search without text selection.
 - `findThenJump.initiateWithSelection`: Jump to a search term, selecting all text between the current cursor position and the search term.
 
-> ℹ️ No default keybindings are provided by this extension - you'll have to bind the commands yourself.
+Once done, you'll be able to trigger the extension with the configured keybindings.
+An input box will appear where you can type your search term. Matches in the document
+will be annotated with an annotation containing a letter. Typing this letter will
+move your cursor to the annotation's location.
 
-- `findThenJump.matchAlgorithm`: Specify the algorithm used for matching text for navigation.
+## Configuration
 
-Available options are:
+### `findThenJump.matchBehavior`
 
-- `default`: Matches any text. (default)
-- `word-start`: Matches the start of alphanumerical or special character sequences separated by whitespace.
-- `alpha-start`: Matches the start of alphanumerical-only character sequences separated by whitespace.
+Use this setting to restrict the location of matches within the document.
+
+#### Options
+
+- `default`: No restrictions on the location of matches within the document.
+   ```ts
+   const fooBar = ''
+
+   // Input: `foo` -> ✅
+   // Input: `bar` -> ✅
+   // Input: `Bar` -> ✅
+   // Input: `oo` -> ✅
+   ```
+
+- `word-start`: Restrict matches for alpha-numerical search terms to the start of words.
+   ```ts
+   const fooBar = ''
+
+   // Input: `foo` -> ✅
+   // Input: `bar` -> ✅
+   // Input: `Bar` -> ✅
+   // Input: `oo` -> ❌
+   ```
 
 ## Theming
 
