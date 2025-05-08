@@ -136,7 +136,7 @@ class DocumentScanner implements IterableIterator<any> {
         const noMatchFound = matchStartIndex === -1
         if (noMatchFound) break
 
-        if (this.configuration.matchBehavior === 'word-start') {
+        if (this.configuration.matchBehavior === 'word-start' && !DocumentScanner.NON_ALPHABETS.test(needle[0])) {
           const isStartOfLine = matchStartIndex === 0
           if (!isStartOfLine) {
             const matchWithPrecedingChar = line.slice(matchStartIndex - 1, matchStartIndex + needle.length)
