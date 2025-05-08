@@ -32,8 +32,7 @@ class DocumentScanner implements IterableIterator<any> {
   static EXCLUSION_LOOKAHEAD_LENGTH: number = 8
   static ITERATION_LIMIT: number = 200
   static NON_ALPHABETS: RegExp = /[^a-z]/gi
-  static ALPHA_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
-  static WORD_START: RegExp = /^(([a-z]|[A-Z])?[^a-zA-Z]|[a-z][A-Z])/g
+  static WORD_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
 
   readonly document: TextDocument
   scannerState: ScannerState
@@ -64,18 +63,18 @@ class DocumentScanner implements IterableIterator<any> {
 
   private generateIterationOrder = (): number[] => {
     // Pre-load iteration order with first line, a minor optimization
-    const iterationOrder: number[] = [this.scannerState.initialLineNumber] 
+    const iterationOrder: number[] = [this.scannerState.initialLineNumber]
     const documentLineCount = this.document.lineCount
 
     // The cursor might already be at a boundary (i.e. at the very top or bottom),
     // so we check for that first before entering the main generation loop,
     // and update the scanner's boundary state to reflect that.
     this.updateScannerBoundaryState()
-    
+
     while (this.shouldContinueScanning(iterationOrder, documentLineCount)) {
       this.generateNextIteration(iterationOrder)
     }
-    
+
     return iterationOrder
   }
 
@@ -107,7 +106,7 @@ class DocumentScanner implements IterableIterator<any> {
     // since that is where the user is probably looking. To achieve this, we
     // generate the iteration order in a 'ripple' pattern originating from the
     // initial cursor position.
-    // 
+    //
     // i.e. We scan the line at the initial cursor position, the one below the
     // initial, the one above the initial, then two above, two below, and so on.
     if (this.scannerState.scanDirection === ScanDirection.Down) {
@@ -123,43 +122,33 @@ class DocumentScanner implements IterableIterator<any> {
     }
   }
 
-  private getMatchRegex(): RegExp | null {
-    if(this.configuration.matchAlgorithm === 'word-start') {
-      return DocumentScanner.WORD_START
-    }
-    if(this.configuration.matchAlgorithm === 'alpha-start') {
-      return DocumentScanner.ALPHA_START
-    }
-    return null
-  }
-
   private* createDocumentIterator(needle: string): Iterator<any> {
-    const matchRegex = this.getMatchRegex()
     for (const currentLine of this.iterationOrder) {
       const line = this.getLineText(currentLine)
       const haystack = line.toLowerCase()
 
       // It's common to have many matches for any given search term (needle) on
-      // any line of text. String.prototype.indexOf() only returns the index of 
+      // any line of text. String.prototype.indexOf() only returns the index of
       // the *first* match, so we need to keep track of this and continue the
       // search until we reach the end of the line.
       for (let needleSearchResumePosition = 0;;) {
-        needleSearchResumePosition = haystack.indexOf(needle, needleSearchResumePosition)
-        const noMatchFound = needleSearchResumePosition === -1
+        const matchStartIndex = haystack.indexOf(needle, needleSearchResumePosition)
+        const noMatchFound = matchStartIndex === -1
         if (noMatchFound) break
 
-        if (matchRegex != null && needleSearchResumePosition > 0) {
-          // Further filter out the 'inside a word' matches
-          const substr = line.slice(needleSearchResumePosition - 1, needleSearchResumePosition + needle.length)
-          const isWordStartLike = substr.match(matchRegex)
-          if (!isWordStartLike) {
-            needleSearchResumePosition += needle.length
-            continue
+        if (this.configuration.matchBehavior === 'word-start') {
+          const isStartOfLine = matchStartIndex === 0
+          if (!isStartOfLine) {
+            const matchWithPrecedingChar = line.slice(matchStartIndex - 1, matchStartIndex + needle.length)
+            const isWordStartLike = matchWithPrecedingChar.match(DocumentScanner.WORD_START)
+            if (!isWordStartLike) {
+              needleSearchResumePosition += needle.length
+              continue
+            }
           }
         }
 
-        const matchStartIndex = needleSearchResumePosition
-        const matchEndIndex = needleSearchResumePosition + needle.length
+        const matchEndIndex = matchStartIndex + needle.length
         needleSearchResumePosition = matchEndIndex
         const excludedChars = this.getExcludedChars(haystack, matchEndIndex)
 

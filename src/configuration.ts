@@ -1,7 +1,7 @@
 import { workspace, WorkspaceConfiguration } from "vscode"
 
 export interface ExtensionConfiguration extends WorkspaceConfiguration {
-  matchAlgorithm: 'default' | 'word-start' | 'alpha-start'
+  matchBehavior: 'default' | 'word-start'
 }
 
 let cfg = workspace.getConfiguration('findThenJump') as ExtensionConfiguration
