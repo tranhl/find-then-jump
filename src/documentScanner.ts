@@ -1,4 +1,5 @@
 import {TextDocument} from 'vscode'
+import { ExtensionConfiguration, getConfiguration } from './configuration'
 
 type Match = {
   lineIndex: number,
@@ -31,11 +32,14 @@ class DocumentScanner implements IterableIterator<any> {
   static EXCLUSION_LOOKAHEAD_LENGTH: number = 8
   static ITERATION_LIMIT: number = 200
   static NON_ALPHABETS: RegExp = /[^a-z]/gi
+  static ALPHA_START: RegExp = /^([^a-zA-Z]|[a-z][A-Z])/g
+  static WORD_START: RegExp = /^(([a-z]|[A-Z])?[^a-zA-Z]|[a-z][A-Z])/g
 
   readonly document: TextDocument
   scannerState: ScannerState
   iterationOrder: number[]
   documentIterator: Iterator<any>
+  configuration: ExtensionConfiguration
 
   constructor(document: Readonly<TextDocument>, initialLineNumber: number, needle: string) {
     this.document = document
@@ -49,10 +53,11 @@ class DocumentScanner implements IterableIterator<any> {
     }
 
     // We want jump option updates to be as responsive as possible while the
-    // user is typing, so we optimise this by generating the order of lines that
+    // user is typing, so we optimize this by generating the order of lines that
     // the scanner will go through while the extension is loading (it loads
     // every time the keyboard shortcut is activated). This greatly simplifies
     // the matching algorithm while the user is typing.
+    this.configuration = getConfiguration()
     this.iterationOrder = this.generateIterationOrder()
     this.documentIterator = this.createDocumentIterator(needle)
   }
@@ -118,18 +123,40 @@ class DocumentScanner implements IterableIterator<any> {
     }
   }
 
+  private getMatchRegex(): RegExp | null {
+    if(this.configuration.matchAlgorithm === 'word-start') {
+      return DocumentScanner.WORD_START
+    }
+    if(this.configuration.matchAlgorithm === 'alpha-start') {
+      return DocumentScanner.ALPHA_START
+    }
+    return null
+  }
+
   private* createDocumentIterator(needle: string): Iterator<any> {
+    const matchRegex = this.getMatchRegex()
     for (const currentLine of this.iterationOrder) {
-      const haystack = this.getLineText(currentLine).toLowerCase()
+      const line = this.getLineText(currentLine)
+      const haystack = line.toLowerCase()
 
       // It's common to have many matches for any given search term (needle) on
       // any line of text. String.prototype.indexOf() only returns the index of 
-      // the *fist* match, so we need to keep track of this and continue the
+      // the *first* match, so we need to keep track of this and continue the
       // search until we reach the end of the line.
       for (let needleSearchResumePosition = 0;;) {
         needleSearchResumePosition = haystack.indexOf(needle, needleSearchResumePosition)
         const noMatchFound = needleSearchResumePosition === -1
         if (noMatchFound) break
+
+        if (matchRegex != null && needleSearchResumePosition > 0) {
+          // Further filter out the 'inside a word' matches
+          const substr = line.slice(needleSearchResumePosition - 1, needleSearchResumePosition + needle.length)
+          const isWordStartLike = substr.match(matchRegex)
+          if (!isWordStartLike) {
+            needleSearchResumePosition += needle.length
+            continue
+          }
+        }
 
         const matchStartIndex = needleSearchResumePosition
         const matchEndIndex = needleSearchResumePosition + needle.length
