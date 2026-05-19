@@ -1,5 +1,8 @@
 # Find Then Jump
 
+> [!WARNING]
+> This project is no longer being actively maintained. Updates to the extension will no longer be pushed.
+
 > [Vim Easymotion](https://github.com/easymotion/vim-easymotion) inspired code navigation.
 
 This extension fork of [Find-Jump](https://github.com/msafi/xvsc/tree/master/findJump) that fixes
